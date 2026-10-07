@@ -1,0 +1,65 @@
+#!/bin/sh
+set -eu
+
+SANDBOX_ROOT="$HOME/claude/"
+SANDBOX_HOME="$HOME"
+PROJECT_DIR="$HOME/.cl-proj"
+
+set --
+
+shopt -s dotglob
+for entry in "$PROJECT_DIR"/*; do
+    [ -L "$entry" ] || continue
+
+    # substitute the home dir
+    HOST_PATH="$(realpath "$entry")"
+    MOUNT_PATH="$SANDBOX_HOME/${HOST_PATH#$HOME}"
+
+    [ -d "$HOST_PATH" ] || {
+        printf 'Invalid project: %s -> %s\n' "$entry" "$HOST_PATH" >&2
+        exit 1
+    }
+
+    set -- "$@" --bind "$HOST_PATH" "$MOUNT_PATH"
+
+done
+
+exec bwrap \
+    --unshare-all \
+    --share-net \
+    \
+    --proc /proc \
+    --dev /dev \
+    --tmpfs /tmp \
+    \
+    --ro-bind /usr /usr \
+    --ro-bind /bin /bin \
+    --ro-bind /sbin /sbin \
+    --ro-bind /lib /lib \
+    --ro-bind /lib64 /lib64 \
+    --ro-bind /etc /etc \
+    --ro-bind /opt /opt \
+    \
+    --bind "$SANDBOX_ROOT" "$SANDBOX_HOME" \
+    \
+    --bind "$HOME/.config/zsh" "$SANDBOX_HOME/.config/zsh" \
+    --bind "$HOME/.config/aliases" "$SANDBOX_HOME/.config/aliases" \
+    --bind "$HOME/.config/env" "$SANDBOX_HOME/.config/env" \
+    --bind "$HOME/.cache" "$SANDBOX_HOME/.cache" \
+    \
+    --ro-bind "$HOME/.local/bin" "$SANDBOX_HOME/.local/bin" \
+    --ro-bind "$HOME/.local/share/claude" "$SANDBOX_HOME/.local/share/claude" \
+    --ro-bind "$HOME/.local/share/godot" "$SANDBOX_HOME/.local/share/godot" \
+    \
+    --chdir "$SANDBOX_HOME" \
+    \
+    "$@" \
+    \
+    --clearenv \
+    --setenv TERM "$TERM" \
+    --setenv HOME "$SANDBOX_HOME" \
+    --setenv SHELL /bin/zsh \
+    --setenv ZDOTDIR "$SANDBOX_HOME/.config/zsh" \
+    --setenv SANDBOX_USER "claude" \
+    \
+    /bin/zsh -l

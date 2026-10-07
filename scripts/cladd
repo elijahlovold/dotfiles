@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for arg in "$@"; do
+    ln -s "$(realpath "$arg")" "$HOME/.cl-proj/"
+done
