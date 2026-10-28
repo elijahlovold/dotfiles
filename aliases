@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# typos
+alias gti='git'
+alias sl='ls'
+alias cd..='cd ..'
+
 # ls aliases
 alias ls='ls -h --si --color=auto'
 alias ll='ls -alF'
@@ -10,33 +15,31 @@ alias lsgr="git ls-files -coz --exclude-standard | xargs -0 stat --format '%y %n
 
 alias cdf='cd $(ls | fzf)'
 
-# cp recents
-alias cpd='cp ~/dl/$(ls -t ~/dl | head -n 1)'
-alias cps='cp ~/pix/screenshots/$(ls -t ~/pix/screenshots/ | head -n 1)'
-
 alias free='free -h'
 
 alias o='xdg-open'
-
-alias gpt='(cd ~/dl/llama.cpp/build/bin && ./llama-cli -m ~/.local/share/nomic.ai/GPT4All/gpt4all-falcon-newbpe-q4_0.gguf -ngl 99)'
 
 # use rg if available, either way, use color
 [ command -v rg >/dev/null 2>&1 ] && alias grep='rg --color=auto' || alias grep='grep --color=auto'
 
 # git aliases
 alias gs='git status'
+alias gc='git commit -m'
+alias gca='git commit -am'
 alias gd='git diff'
 alias gsw='git switch'
 alias gsu='git submodule update'
 alias glog='git log --oneline --graph'
 alias gsun='git submodule foreach --quiet '\''if [ -n "$sha1" ] && [ "$(git rev-parse HEAD)" != "$sha1" ]; then echo -e "\033[36m$name\033[0m"; git log --oneline $sha1..HEAD; fi'\'''
 
+alias rsy='rsync -avh -e ssh'
+
 # copy paste
 alias xc="xclip -sel clip <"
 alias xp="xclip -sel clip -o >"
 
 # gio controls
-alias tsh="gio trash"
+alias rmr="gio trash"
 
 # some nice utils
 alias lst='ls -t | head -n1'
@@ -67,6 +70,30 @@ toggle-venv() {
         echo "No .venv found" >&2
         return 1
     fi
+}
+
+cpnew() {
+    local src
+    src=$(find "$1" -maxdepth 1 -type f -printf '%T@\t%p\n' |
+        sort -nr |
+        head -n1 |
+        cut -f2-)
+
+    [[ -n $src ]] || {
+        printf 'cpnew: no files in %s\n' "$1" >&2
+        return 1
+    }
+
+    cp -- "$src" "${2:-.}"
+}
+
+cpd() { cpnew ~/dl "$@"; }
+cps() { cpnew ~/pix/screenshots "$@"; }
+cpr() { cpnew ~/vids/recordings "$@"; }
+
+psu() {
+    uv pip install -r requirements.txt &&
+    [ ! -x ./tools/pyuic_all.py ] || ./tools/pyuic_all.py
 }
 
 # python .venv auto-sourcing

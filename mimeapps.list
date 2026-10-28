@@ -36,3 +36,4 @@ application/vnd.oasis.opendocument.spreadsheet=libreoffice-calc.desktop
 application/x-blender=blender.desktop
 x-scheme-handler/slack=slack.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/discord=vesktop.desktop

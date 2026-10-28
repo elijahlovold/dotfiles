@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
 SANDBOX_ROOT="$HOME/claude/"
@@ -30,6 +30,9 @@ exec bwrap \
     \
     --proc /proc \
     --dev /dev \
+    --dev-bind-try /dev/bus/usb /dev/bus/usb \
+    --ro-bind-try /sys/bus/usb /sys/bus/usb \
+    --ro-bind-try /sys/devices /sys/devices \
     --tmpfs /tmp \
     \
     --ro-bind /usr /usr \
@@ -42,9 +45,7 @@ exec bwrap \
     \
     --bind "$SANDBOX_ROOT" "$SANDBOX_HOME" \
     \
-    --bind "$HOME/.config/zsh" "$SANDBOX_HOME/.config/zsh" \
-    --bind "$HOME/.config/aliases" "$SANDBOX_HOME/.config/aliases" \
-    --bind "$HOME/.config/env" "$SANDBOX_HOME/.config/env" \
+    --ro-bind "$HOME/.config" "$SANDBOX_HOME/.config" \
     --bind "$HOME/.cache" "$SANDBOX_HOME/.cache" \
     \
     --ro-bind "$HOME/.local/bin" "$SANDBOX_HOME/.local/bin" \

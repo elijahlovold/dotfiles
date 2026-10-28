@@ -12,10 +12,10 @@
 # [ "$(tty)" = "/dev/tty1" ] && openrgb -p default.orp --noautoconnect &
 
 # source env vars
+[ -f "$HOME/.env" ] && . "$HOME/.env"
 [ -f "$HOME/.config/env" ] && . "$HOME/.config/env"
-[ -f "$HOME/.config/.env" ] && . "$HOME/.config/.env"
 [ -f "$HOME/.config/aliases" ] && . "$HOME/.config/aliases"
 
-if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-    exec dbus-run-session start-hyprland
-fi
+# if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+#     exec dbus-run-session start-hyprland
+# fi

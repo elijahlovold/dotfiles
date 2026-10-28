@@ -82,9 +82,9 @@ target = "~/.config/btop/themes/wallust.theme"
 template = "zathurarc"
 target = "~/.config/zathura/zathurarc"
 
-[templates.spicetify]
-template = "spicetify.ini"
-target = "~/.config/spicetify/Themes/StarTui/color.ini"
+# [templates.spicetify]
+# template = "spicetify.ini"
+# target = "~/.config/spicetify/Themes/StarTui/color.ini"
 
 [templates.openrgb]
 template = "openrgb.json"
@@ -95,11 +95,22 @@ template = "keytree-colors.toml"
 target = "~/.config/keytree/colors.toml"
 
 [templates.quickshell]
-template = "quickshell.qml"
-target = "~/.config/quickshell/modules/theme/Theme.qml"
+template = "quickshell_palette.json"
+target = "~/.cache/quickshell/palette.json"
+
+# Browser-based apps 
+
+[templates.vesktop]
+template = "vesktop.css"
+target = "~/.config/vesktop/themes/wallust.css"
+
+[templates.pywalfox]
+template = "pywalfox-colors.json"
+target = "~/.cache/wal/colors.json"
 
 [hooks]
 # Run commands when wallust is invoked. Useful to avoid scripting.
 i3status_refresh = "pkill -USR2 i3status-rs"
 # spicetify_refresh = "spicetify apply --no-restart"
 openrgb_refresh = "wallust-openrgb"
+pywalfox_refresh = "pywalfox update"
